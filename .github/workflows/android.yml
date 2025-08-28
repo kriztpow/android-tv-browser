@@ -13,6 +13,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        # Esto asegura que los permisos de archivo se mantengan correctamente
+        persist-credentials: false
 
     - name: Set up JDK 17
       uses: actions/setup-java@v3
@@ -20,17 +23,24 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    # Paso crucial: Dar permisos de ejecución a gradlew
     - name: Make gradlew executable
-      run: chmod +x gradlew
-
-    - name: Clean gradle cache
       run: |
-        rm -rf ~/.gradle/caches
-        ./gradlew clean
+        # Asegurar que gradlew tenga permisos de ejecución
+        chmod +x ./gradlew
+        # Verificar los permisos
+        ls -la gradlew
 
-    - name: Run gradle tasks
-      run: ./gradlew tasks --no-daemon
+    - name: Verify Gradle Wrapper
+      run: |
+        # Verificar que el wrapper de Gradle esté correctamente configurado
+        ./gradlew --version
 
-    - name: Build with Gradle
-      run: ./gradlew build --no-daemon
+    - name: Clean and Build
+      run: |
+        # Limpiar caché y construir en un solo paso
+        ./gradlew clean build --no-daemon
+
+    - name: List tasks (para verificación)
+      run: |
+        # Listar tareas disponibles para verificar la configuración
+        ./gradlew tasks --no-daemon
