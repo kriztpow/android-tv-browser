@@ -1,13 +1,10 @@
-name: Android CI
+name: Android Debug
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:  # Se ejecuta manualmente desde GitHub Actions
 
 jobs:
-  build:
+  debug:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,11 +20,18 @@ jobs:
     - name: Make gradlew executable
       run: chmod +x ./gradlew
 
-    - name: List Gradle tasks
-      run: ./gradlew tasks --no-daemon
+    # 🔹 1. Listar todas las tareas de Gradle
+    - name: List all Gradle tasks
+      run: ./gradlew tasks --all --no-daemon
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-apk
-        path: app/build/outputs/apk/debug/app-debug.apk
+    # 🔹 2. Listar todos los plugins aplicados
+    - name: Show applied plugins
+      run: ./gradlew -q projects | grep "Plugin"
+
+    # 🔹 3. Mostrar todas las propiedades del proyecto
+    - name: Show Gradle properties
+      run: ./gradlew properties --no-daemon
+
+    # 🔹 4. Mostrar la estructura de módulos y proyectos
+    - name: Show project structure
+      run: ./gradlew projects --no-daemon
