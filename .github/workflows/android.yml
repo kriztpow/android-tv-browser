@@ -43,3 +43,6 @@ jobs:
       run: |
         # Listar tareas disponibles para verificar la configuración
         ./gradlew tasks --no-daemon
+        
+- name: Test Gradle
+  run: ./gradlew --version
