@@ -36,10 +36,10 @@ jobs:
         ./gradlew --version
 
     - name: Clean and Build
-  shell: bash
-  run: ./gradlew clean build --no-daemon
+      shell: bash
+      run: ./gradlew clean build --no-daemon
 
-    - name: List tasks (para verificación)
+    - name: List tasks
       run: |
         # Listar tareas disponibles para verificar la configuración
         ./gradlew tasks --no-daemon
