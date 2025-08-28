@@ -12,5 +12,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "TV-Web-Browser"
+rootProject.name = "android-tv-browser"
 include ':app'
+
