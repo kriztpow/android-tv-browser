@@ -36,9 +36,8 @@ jobs:
         ./gradlew --version
 
     - name: Clean and Build
-      run: |
-        # Limpiar caché y construir en un solo paso
-        ./gradlew clean build --no-daemon
+  shell: bash
+  run: ./gradlew clean build --no-daemon
 
     - name: List tasks (para verificación)
       run: |
