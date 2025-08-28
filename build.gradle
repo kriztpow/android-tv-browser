@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath 'com.android.tools.build:gradle:7.4'
         // Nota: Esta versión del plugin requiere Gradle 7.5+
         // Si hay problemas, podemos cambiarla a una versión más reciente
     }
@@ -21,3 +21,4 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
