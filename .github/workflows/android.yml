@@ -20,13 +20,14 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    # Paso crucial: Dar permisos de ejecución a gradlew
+    - name: Make gradlew executable
+      run: chmod +x gradlew
+
     - name: Clean gradle cache
       run: |
         rm -rf ~/.gradle/caches
         ./gradlew clean
-
-    - name: Make gradlew executable
-      run: chmod +x gradlew
 
     - name: Run gradle tasks
       run: ./gradlew tasks --no-daemon
