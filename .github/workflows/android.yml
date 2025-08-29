@@ -1,24 +1,37 @@
-name: Android TV Browser CI
+name: Android Debug
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:  # Se ejecuta manualmente desde GitHub Actions
 
 jobs:
-  build:
+  debug:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Build and test
-        run: ./gradlew build check
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+
+    # 🔹 1. Listar todas las tareas de Gradle
+    - name: List all Gradle tasks
+      run: ./gradlew tasks --all --no-daemon
+
+    # 🔹 2. Listar todos los plugins aplicados
+    - name: Show applied plugins
+      run: ./gradlew -q projects | grep "Plugin"
+
+    # 🔹 3. Mostrar todas las propiedades del proyecto
+    - name: Show Gradle properties
+      run: ./gradlew properties --no-daemon
+
+    # 🔹 4. Mostrar la estructura de módulos y proyectos
+    - name: Show project structure
+      run: ./gradlew projects --no-daemon
