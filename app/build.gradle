@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.application' version '8.1.4'
 }
 
 android {
@@ -12,8 +12,6 @@ android {
         targetSdk 35
         versionCode 1
         versionName "1.0"
-
-        // Para evitar problemas con apps grandes y multidex
         multiDexEnabled true
     }
 
@@ -30,23 +28,34 @@ android {
     }
 
     compileOptions {
-        // Migramos a Java 17 (recomendado por Google desde 2024)
+        // Gradle 8.0 soporta perfectamente Java 17
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    // Habilitar View Binding para facilitar UI
     buildFeatures {
         viewBinding true
     }
 
-    packagingOptions {
+    packaging {
         resources {
-            excludes += ['META-INF/DEPENDENCIES', 'META-INF/NOTICE', 'META-INF/LICENSE']
+            excludes += [
+                'META-INF/DEPENDENCIES',
+                'META-INF/NOTICE',
+                'META-INF/LICENSE'
+            ]
         }
     }
 }
 
 dependencies {
-    // Librerías AndroidX actualizadas a agosto 2025
-    implementation 'androidx.appcompat:appcompat:1.
+    // Librerías AndroidX actualizadas y compatibles con Gradle 8.0
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.4'
+
+    // Soporte MultiDex
+    implementation 'androidx.multidex:multidex:2.0.1'
+}
