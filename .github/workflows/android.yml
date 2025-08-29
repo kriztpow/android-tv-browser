@@ -22,15 +22,10 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      
-      - name: Build with Gradlex
-        run:  ./gradlew clean
-
-       -name: vergacion
-        run:  ./gradlew assembleDebug
 
       - name: Build with Gradle
-        run:  ./gradlew build
+        run: ./gradlew clean
+             ./gradlew build
 
       - name: Upload APK artifact (opcional)
         uses: actions/upload-artifact@v4
