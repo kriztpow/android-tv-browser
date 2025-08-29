@@ -1,25 +1,10 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
-        // Nota: Esta versión del plugin requiere Gradle 7.5+
-        // Si hay problemas, podemos cambiarla a una versión más reciente
-    }
+// Top-level build file compatible with Gradle 8.0 and AGP 8.8.0
+
+plugins {
+    // Este bloque se usa para plugins globales si los necesitas
+    // Ejemplo: id("org.jetbrains.kotlin.android") version "1.9.10" apply false
 }
 
-allprojects {
-    repositories {
-        // Los repositorios para las dependencias de tu proyecto
-        // se definen en settings.gradle
-    }
+tasks.register("clean", Delete) {
+    delete(rootProject.buildDir)
 }
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-
-
