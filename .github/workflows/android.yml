@@ -16,18 +16,18 @@ jobs:
     steps:
       # 1. Clonar el repositorio
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2. Configurar JDK 17 (requerido para Android Gradle Plugin 8+)
+      # 2. Configurar JDK 17
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
 
-      # 3. Configurar caché de Gradle para acelerar compilaciones
+      # 3. Configurar caché de Gradle
       - name: Cache Gradle
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
@@ -36,7 +36,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle
 
-      # 4. Dar permisos al gradlew
+      # 4. Dar permisos de ejecución al gradlew
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -44,13 +44,13 @@ jobs:
       - name: Download dependencies
         run: ./gradlew dependencies
 
-      # 6. Compilar APK en modo debug
+      # 6. Compilar el APK en modo debug
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
 
-      # 7. Guardar el APK como artefacto descargable
+      # 7. Subir el APK como artefacto
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: android-tv-browser-apk
           path: app/build/outputs/apk/debug/app-debug.apk
