@@ -18,11 +18,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Configurar JDK 11
-      - name: Set up JDK 11
+      # 2. Configurar JDK 11 usando Zulu (más estable)
+      - name: Set up JDK 11 (Zulu)
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: 'zulu'
           java-version: 11
 
       # 3. Configurar caché de Gradle
