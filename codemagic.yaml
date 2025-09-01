@@ -1,14 +1,15 @@
 workflows:
   android-workflow:
-    name: Android Build
+    name: Android TV Browser
     environment:
       groups: []
       vars:
         PACKAGE_NAME: "com.example.tvbrowser"
+        FLUTTER_VERSION: "3.10.0"  # Versión específica de Flutter
     scripts:
-      - name: Get Flutter packages
+      - name: Get dependencies
         script: flutter pub get
-      - name: Build Android APK
+      - name: Build APK
         script: flutter build apk --release --target-platform=android-arm,android-arm64
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
