@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,6 +60,7 @@ class _HomePageState extends State<HomePage> {
   late bool _phoneMode;
   late bool _showCursor;
   final TextEditingController _urlController = TextEditingController();
+  final FocusNode _urlFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -80,10 +83,13 @@ class _HomePageState extends State<HomePage> {
         url = 'https://$url';
       }
       
-      // En una app real aquí navegarías a la WebView
-      print('Navegando a: $url');
-      print('Modo teléfono: $_phoneMode');
-      print('Mostrar cursor: $_showCursor');
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => WebViewPage(
+          url: url,
+          phoneMode: _phoneMode,
+          showCursor: _showCursor,
+        ),
+      ));
     }
   }
 
@@ -100,6 +106,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             TextField(
               controller: _urlController,
+              focusNode: _urlFocusNode,
               decoration: InputDecoration(
                 labelText: 'URL',
                 border: const OutlineInputBorder(),
@@ -108,11 +115,12 @@ class _HomePageState extends State<HomePage> {
                   onPressed: _navigateToWebView,
                 ),
               ),
+              onSubmitted: (_) => _navigateToWebView(),
             ),
             
             const SizedBox(height: 20),
             
-            const Text('Opciones:', style: TextStyle(fontSize: 18)),
+            const Text('Opciones:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             
             SwitchListTile(
               title: const Text('Modo Teléfono (Vertical)'),
@@ -148,5 +156,141 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+}
+
+class WebViewPage extends StatefulWidget {
+  final String url;
+  final bool phoneMode;
+  final bool showCursor;
+  
+  const WebViewPage({
+    Key? key,
+    required this.url,
+    required this.phoneMode,
+    required this.showCursor,
+  }) : super(key: key);
+
+  @override
+  _WebViewPageState createState() => _WebViewPageState();
+}
+
+class _WebViewPageState extends State<WebViewPage> {
+  late WebViewController _controller;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.phoneMode) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Navegador'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () async {
+              if (await _controller.canGoBack()) {
+                _controller.goBack();
+              }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.arrow_forward),
+            onPressed: () async {
+              if (await _controller.canGoForward()) {
+                _controller.goForward();
+              }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              _controller.reload();
+            },
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          WebView(
+            initialUrl: widget.url,
+            javascriptMode: JavascriptMode.unrestricted,
+            onWebViewCreated: (WebViewController webViewController) {
+              _controller = webViewController;
+              if (widget.phoneMode) {
+                _controller.setUserAgent(
+                  "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36"
+                );
+              }
+            },
+            onPageStarted: (String url) {
+              setState(() {
+                _isLoading = true;
+              });
+            },
+            onPageFinished: (String url) {
+              setState(() {
+                _isLoading = false;
+              });
+            },
+            gestureNavigationEnabled: true,
+          ),
+          
+          if (_isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
+          
+          if (widget.showCursor)
+            Positioned(
+              top: 100,
+              right: 50,
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.red, width: 2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.mouse,
+                    color: Colors.red,
+                    size: 24,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.dispose();
   }
 }
